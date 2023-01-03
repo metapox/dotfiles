@@ -1,0 +1,9 @@
+[user]
+	name = $NAME
+	email = $EMAIL
+[init]
+	defaultBranch = main
+[core]
+	ignorecase = false
+[status]
+	showUntrackedFiles = all
