@@ -4,7 +4,9 @@ set -ue
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 # TODO
-#
+# echoが汚い (echo の部分も共通関数にできるようにしたい)
+# それぞれ関数にしたい
+# 途中で失敗しても続きからできるようにしたい
 
 # brew
 
@@ -26,6 +28,7 @@ brew install --cask zsh
 touch ~/.zshrc
 cp ~/.zshrc ~/.zshrc.bk
 cp "${SCRIPT_DIR}/../zsh/.zshrc" ~/.zshrc
+chsh -s /bin/zsh
 
 echo "zsh の設定が完了しました。"
 echo ""
