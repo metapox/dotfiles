@@ -7,6 +7,7 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 # echoが汚い (echo の部分も共通関数にできるようにしたい)
 # それぞれ関数にしたい
 # 途中で失敗しても続きからできるようにしたい
+# git-secretとgit ファイルの別々になってる問題
 
 # brew
 
@@ -56,6 +57,17 @@ cp "${SCRIPT_DIR}/../git/.gitconfig" ~/.gitconfig
 
 echo "=== git の設定が完了しました。==="
 echo ""
+
+# git-secret
+echo "=== git-secret の設定を開始します。==="
+echo ""
+
+brew install git-secrets
+git secrets --register-aws
+
+echo "=== git-secre の設定が完了しました。==="
+echo ""
+
 
 # vim
 
