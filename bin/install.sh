@@ -20,7 +20,7 @@ brew install gettext
 brew link --force gettext
 
 brew install fzf
-brew install repgrep
+brew install ripgrep
 
 echo "=== 必要なツールのインストールが完了しました。==="
 echo ""
