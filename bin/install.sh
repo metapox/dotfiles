@@ -12,13 +12,15 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 # git-secretとgit ファイルの別々になってる問題
 
 # brew
-
 # install tools
 echo "=== 必要なツールをインストールします。==="
 echo ""
 
 brew install gettext
 brew link --force gettext
+
+brew install fzf
+brew install ripgrep
 
 echo "=== 必要なツールのインストールが完了しました。==="
 echo ""
