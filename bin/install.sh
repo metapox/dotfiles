@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -ue
 
+echo $SHELL
+
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 # TODO
@@ -22,16 +24,37 @@ echo "=== 必要なツールのインストールが完了しました。==="
 echo ""
 
 # zsh
-echo "=== zsh の設定を開始します。==="
+# echo "=== zsh の設定を開始します。==="
+# echo ""
+
+# brew install --cask zsh
+# touch ~/.zshrc
+# cp ~/.zshrc ~/.zshrc.bk
+# cp "${SCRIPT_DIR}/../zsh/.zshrc" ~/.zshrc
+# chsh -s /bin/zsh
+
+# echo ""=== zsh の設定が完了しました。 ==="
+# echo ""
+
+# fish
+echo "=== fish の設定を開始します。==="
 echo ""
 
-brew install --cask zsh
-touch ~/.zshrc
-cp ~/.zshrc ~/.zshrc.bk
-cp "${SCRIPT_DIR}/../zsh/.zshrc" ~/.zshrc
-chsh -s /bin/zsh
+brew install fish
+SHELL_FILE="/etc/shells"
+FISH_PATH="/usr/local/bin/fish"
 
-echo "zsh の設定が完了しました。"
+sudo -s << COMMAND
+if ! grep -q "$FISH_PATH" "$SHELL_FILE"; then
+  echo "$FISH_PATH" >> "$SHELL_FILE"
+fi
+COMMAND
+chsh -s /usr/local/bin/fish
+
+cp ~/.config/fish/config.fish ~/.config/config.fish
+cp -r "${SCRIPT_DIR}/../config.fish" ~/.config/fish/config.fish
+
+echo "=== fish の設定が完了しました。==="
 echo ""
 
 # warp
