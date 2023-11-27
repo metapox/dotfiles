@@ -5,6 +5,31 @@ echo $SHELL
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
+# function
+function diff_check() {
+  backup_file=$1
+  target_file=$2
+
+  # ファイル間の差分を取得
+  DIFF_OUTPUT=$(diff $backup_file $target_file)
+
+  # 差分が存在する場合、ユーザーにパッチの適用を尋ねる
+  if [ -n "$DIFF_OUTPUT" ]; then
+    echo $DIFF_OUTPUT
+
+    echo "差分が存在します。パッチを適用しますか？ [y/N]"
+    read answer
+    if [ "$answer" = "y" ]; then
+      echo "$DIFF_OUTPUT" | patch $backup_file
+      echo "パッチを適用しました。"
+    else
+      echo "パッチの適用をスキップしました。"
+    fi
+  else
+    echo "差分は存在しません。"
+  fi
+}
+
 # TODO
 # echoが汚い (echo の部分も共通関数にできるようにしたい)
 # それぞれ関数にしたい
