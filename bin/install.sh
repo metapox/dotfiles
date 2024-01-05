@@ -6,12 +6,30 @@ echo $SHELL
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 # functions
+
+function attach_config() {
+  file_path=$1
+  source_path=$2
+
+  if [ -f $file_path ]; then
+    cp -r $file_path $file_path.bk
+    cp -r $source_path $file_path
+    patch_to_file $file_path.bk $file_path
+  else
+    mkdir -p $(dirname $file_path)
+    cp -r $source_path $file_path
+  fi
+}
+
 function patch_to_file() {
   backup_file=$1
   target_file=$2
+  echo $backup_file
+  echo $target_file
 
   # ファイル間の差分を取得
-  DIFF_OUTPUT=$(diff $target_file $backup_file)
+  DIFF_OUTPUT=$(echo "$(diff -u $target_file $backup_file)")
+  echo $DIFF_OUTPUT
 
   # 差分が存在する場合、ユーザーにパッチの適用を尋ねる
   if [ -n "$DIFF_OUTPUT" ]; then
@@ -46,67 +64,57 @@ brew link --force gettext
 
 brew install fzf
 brew install ripgrep
+brew install derailed/k9s/k9s
 
 echo "=== 必要なツールのインストールが完了しました。==="
 echo ""
 
 # zsh
-# echo "=== zsh の設定を開始します。==="
-# echo ""
+echo "=== zsh の設定を開始します。==="
+echo ""
 
-# brew install --cask zsh
-# touch ~/.zshrc
-# cp ~/.zshrc ~/.zshrc.bk
-# cp "${SCRIPT_DIR}/../zsh/.zshrc" ~/.zshrc
-# chsh -s /bin/zsh
+brew install zsh
+attach_config ~/.zshrc "${SCRIPT_DIR}/../zsh/.zshrc"
+chsh -s /bin/zsh
 
-# echo ""=== zsh の設定が完了しました。 ==="
-# echo ""
+echo "=== zsh の設定が完了しました。 ==="
+echo ""
 
 # fish
-echo "=== fish の設定を開始します。==="
-echo ""
+# echo "=== fish の設定を開始します。==="
+# echo ""
 
-brew install fish
-SHELL_FILE="/etc/shells"
-FISH_PATH="/usr/local/bin/fish"
+# brew install fish
+# SHELL_FILE="/etc/shells"
+# FISH_PATH="/usr/local/bin/fish"
 
-sudo -s << COMMAND
-if ! grep -q "$FISH_PATH" "$SHELL_FILE"; then
-  echo "$FISH_PATH" >> "$SHELL_FILE"
-fi
-chsh -s /usr/local/bin/fish
-COMMAND
+# sudo -s << COMMAND
+# if ! grep -q "$FISH_PATH" "$SHELL_FILE"; then
+#   echo "$FISH_PATH" >> "$SHELL_FILE"
+# fi
+# chsh -s /usr/local/bin/fish
+# COMMAND
 
-cp ~/.config/fish/config.fish ~/.config/config.fish.bk
-cp -r "${SCRIPT_DIR}/../fish/config.fish" ~/.config/fish/config.fish
-patch_to_file ~/.config/config.fish.bk ~/.config/fish/config.fish
+# attach_config ~/.config/fish/config.fish "${SCRIPT_DIR}/../fish/config.fish"
 
-echo "=== fish の設定が完了しました。==="
-echo ""
+# echo "=== fish の設定が完了しました。==="
+# echo ""
 
 # warp
-echo "=== warp の設定を開始します。==="
-echo ""
-brew install --cask warp
-echo "=== warp の設定が完了しました。==="
-echo ""
+# echo "=== warp の設定を開始します。==="
+# echo ""
+# brew install --cask warp
+# echo "=== warp の設定が完了しました。==="
+# echo ""
 
 # git/github
 echo "=== git の設定を開始します。==="
 echo ""
 
-mkdir -p ~/.config/git
-touch ~/.config/git/ignore
-cp ~/.config/git/ignore ~/.config/git/ignore.bk
-cp "${SCRIPT_DIR}/../git/global_gitignore" ~/.config/git/ignore
-patch_to_file ~/.config/git/ignore.bk ~/.config/git/ignore
+attach_config ~/.config/git/ignore "${SCRIPT_DIR}/../git/global_gitignore"
 
 source "${SCRIPT_DIR}/make_gitconfig.sh"
-touch ~/.gitconfig
-cp ~/.gitconfig ~/.gitconfig.bk
-cp "${SCRIPT_DIR}/../git/.gitconfig" ~/.gitconfig
-patch_to_file ~/.gitconfig.bk ~/.gitconfig
+attach_config ~/.gitconfig "${SCRIPT_DIR}/../git/.gitconfig"
 
 echo "=== git の設定が完了しました。==="
 echo ""

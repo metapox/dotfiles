@@ -1,5 +1,10 @@
 # 手動インストールするツール一覧
-todo
+* docker
+* Typora
+* vscode
+* slack
+* Google Chrome
+* Flux
 
 # init
 ```
