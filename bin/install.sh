@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -ue
 
-echo $SHELL
-
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 # functions
@@ -41,11 +39,11 @@ function patch_to_file() {
 echo "=== 必要なツールをインストールします。==="
 echo ""
 
-brew install gettext
-brew link --force gettext
+# brew install gettext
+# brew link --force gettext
 
-brew install fzf
-brew install ripgrep
+# brew install fzf
+# brew install ripgrep
 
 echo "=== 必要なツールのインストールが完了しました。==="
 echo ""
@@ -74,11 +72,11 @@ FISH_PATH="/usr/local/bin/fish"
 sudo -s << COMMAND
 if ! grep -q "$FISH_PATH" "$SHELL_FILE"; then
   echo "$FISH_PATH" >> "$SHELL_FILE"
-fi
+end
 chsh -s /usr/local/bin/fish
 COMMAND
 
-cp ~/.config/fish/config.fish ~/.config/config.fish.bk
+cp ~/.config/fish/config.fish ~/.config/fish/config.fish.bk
 cp -r "${SCRIPT_DIR}/../fish/config.fish" ~/.config/fish/config.fish
 patch_to_file ~/.config/config.fish.bk ~/.config/fish/config.fish
 
