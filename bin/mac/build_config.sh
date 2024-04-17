@@ -35,7 +35,7 @@ if [ -f "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml" ]; then
   echo "The group_vars file already exists."
 else
   mkdir -p "$ROOT/ansible/inventories/$dir_name/host_vars"
-  cp "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml"
+  touch "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml"
 
   cat <<EOF > "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml"
 ---
