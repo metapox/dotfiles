@@ -1,0 +1,14 @@
+- name: install git
+  homebrew:
+    name: git
+    state: present
+- name: "copy global git config"
+  copy:
+    src: ".config/git/ignore"
+    dest: "{{ ansible_env.HOME }}/.config/git/ignore"
+    backup: yes
+- name: "template gitconfig"
+  template:
+    src: "gitconfig.j2"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    backup: yes
