@@ -1,0 +1,20 @@
+- name: install fish
+  homebrew:
+    name: fish
+    state: present
+- name: Set Fish shell as default shell for the user
+  command: "echo '/usr/local/bin/fish' | sudo tee -a /etc/shells"
+  args:
+    creates: /etc/shells
+- name: Change the default shell for the user to Fish
+  command: "chsh -s /usr/local/bin/fish"
+- name: Ensure Fish configuration directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.config/fish"
+    state: directory
+- name: Copy Fish config file to the user's home directory
+  copy:
+    src: files/.config/fish/config.fish
+    dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    mode: '0644'
+    backup: yes
