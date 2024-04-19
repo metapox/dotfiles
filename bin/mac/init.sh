@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ue
 
+PWD=$(cd $(dirname $0); pwd)
+echo $PWD
+
 if  type brew > /dev/null 2>&1; then
   echo "skip: Install brew"
 else
@@ -15,6 +18,15 @@ else
   brew install ansible
 fi
 
-path=$(cd $(dirname $0)/../../; pwd)
-echo "path: $path"
-ansible-playbook $path/ansible/setup_mac.yaml
+ansible_path=$(cd $(dirname $0)/../../ansible; pwd)
+
+# 実行するinventoryファイルのパスを取得
+read -p "Enter your inventory file path: " inventory_file_path
+echo "$ansible_path/inventories/$inventory_file_path" 
+if [ ! -d "$ansible_path/inventories/$inventory_file_path" ]; then
+  echo "Please execute the following command."
+  echo "$PWD"/build_config.sh
+  exit 1
+fi
+
+ansible-playbook -c local -i $ansible_path/inventories/$inventory_file_path/hosts.yaml $ansible_path/setup_mac.yaml 

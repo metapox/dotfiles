@@ -2,6 +2,9 @@
 todo
 
 # init
+
+## mac
 ```
-sh ./bin/install.sh
+./bin/build_config.sh
+./bin/mac.init
 ```
