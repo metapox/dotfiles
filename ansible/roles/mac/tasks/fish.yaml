@@ -2,14 +2,19 @@
   homebrew:
     name: fish
     state: present
+- name: Get Fish shell installation path
+  command: "which fish"
+  register: fish_install_path_result
+  changed_when: false
+  check_mode: no
 - name: Set Fish shell as default shell for the user
   lineinfile:
     dest: /etc/shells
-    line: "/opt/homebrew/bin/fish"
+    line: "{{ fish_install_path_result.stdout }}"
     state: present
     insertafter: EOF
 - name: Change the default shell for the user to Fish
-  command: "chsh -s /opt/homebrew/bin/fish"
+  command: "chsh -s {{ fish_install_path_result.stdout }}"
 - name: Ensure Fish configuration directory exists
   file:
     path: "{{ ansible_env.HOME }}/.config/fish"
