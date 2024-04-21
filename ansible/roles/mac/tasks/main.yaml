@@ -1,7 +1,7 @@
 ---
+- import_tasks: packages.yaml
+  tags: packages
 - import_tasks: git.yaml
   tags: git
 - import_tasks: fish.yaml
   tags: fish
-- import_tasks: packages.yaml
-  tags: packages
