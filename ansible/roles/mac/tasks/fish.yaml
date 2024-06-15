@@ -25,3 +25,12 @@
     dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
     mode: '0644'
     backup: yes
+- name: Copy Fish functions to the user's home directory
+  copy:
+    src: files/.config/fish/functions
+    dest: "{{ ansible_env.HOME }}/.config/fish/functions"
+    mode: '0644'
+- name: Touch custom Fish configuration file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/fish/custom_config.fish"
+    state: touch

@@ -6,5 +6,5 @@ todo
 ## mac
 ```
 ./bin/build_config.sh
-./bin/mac.init
+./bin/mac/init.sh
 ```

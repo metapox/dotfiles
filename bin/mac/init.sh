@@ -20,8 +20,8 @@ fi
 
 ansible_path=$(cd $(dirname $0)/../../ansible; pwd)
 
-# 実行するinventoryファイルのパスを取得
-read -p "Enter your inventory file path: " inventory_file_path
+inventory_file_path=$(ls $ansible_path/inventories | fzf --prompt="Select inventory file path: ")
+
 echo "$ansible_path/inventories/$inventory_file_path" 
 if [ ! -d "$ansible_path/inventories/$inventory_file_path" ]; then
   echo "Please execute the following command."
