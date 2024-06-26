@@ -6,7 +6,7 @@ function get-instance-id
     set instance_name $argv[(math $OPTIND + 1)]
 
     if test -z $instance_name
-        echo "Usage: get-instance-id -n <instance_name> [-r]"
+        echo "Usage: get-instance-id <instance_name> [-r]"
         return 1
     end
 
