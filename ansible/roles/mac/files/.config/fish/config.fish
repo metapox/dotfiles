@@ -1,8 +1,4 @@
 if status is-interactive
-<<<<<<< HEAD
-    # eval (/opt/homebrew/bin/brew shellenv)
-end
-=======
     eval (/opt/homebrew/bin/brew shellenv)
 end
 
@@ -16,4 +12,3 @@ end
 
 # カスタム設定ファイルの読み込み
 source ~/.config/fish/custom_config.fish
->>>>>>> 08c3d67 (fix: fish custom)

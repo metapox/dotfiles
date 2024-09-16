@@ -36,12 +36,14 @@ if [ -f "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml" ]; then
 else
   mkdir -p "$ROOT/ansible/inventories/$dir_name/host_vars"
   touch "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml"
+  read -p "Please enter the name of the git config: " git_name
+  read -p "Please enter the email address of the git config: " git_email
 
   cat <<EOF > "$ROOT/ansible/inventories/$dir_name/host_vars/localhost.yaml"
 ---
 git:
-  name: # git configに登録されるname
-  email: # git configに登録されるemail address
+  name: $git_name
+  email: $git_email
 EOF
 
   echo "Created a group_vars file."
