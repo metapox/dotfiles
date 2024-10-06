@@ -1,5 +1,5 @@
 if status is-interactive
-    eval (/opt/homebrew/bin/brew shellenv)
+    eval (brew shellenv)
 end
 
 # aliasの読み込み
