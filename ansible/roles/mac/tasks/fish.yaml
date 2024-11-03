@@ -24,7 +24,6 @@
     src: files/.config/fish/config.fish
     dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
     mode: '0644'
-    backup: yes
 - name: Copy Fish functions to the user's home directory
   copy:
     src: files/.config/fish/functions
