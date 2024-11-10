@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - action-env-test
 
 jobs:
   print-env:
