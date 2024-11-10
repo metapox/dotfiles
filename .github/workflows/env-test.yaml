@@ -1,0 +1,16 @@
+name: Env Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  print-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print environment variables
+        run: echo ${{ vars.TEST }}
