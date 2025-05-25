@@ -5,3 +5,5 @@
   tags: git
 - import_tasks: fish.yaml
   tags: fish
+- import_tasks: kitty.yaml
+  tags: kitty
