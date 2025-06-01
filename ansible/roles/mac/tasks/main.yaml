@@ -7,3 +7,5 @@
   tags: fish
 - import_tasks: kitty.yaml
   tags: kitty
+- import_tasks: amazonq.yaml
+  tags: amazonq
