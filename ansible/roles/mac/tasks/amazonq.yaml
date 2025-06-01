@@ -1,0 +1,43 @@
+---
+- name: "Create Amazon Q config directory"
+  file:
+    path: "{{ ansible_env.HOME }}/.aws/amazonq/rules/global"
+    state: directory
+    mode: '0755'
+
+- name: "Copy Amazon Q default rules"
+  copy:
+    src: ".aws/amazonq/rules/global/default.md"
+    dest: "{{ ansible_env.HOME }}/.aws/amazonq/rules/global/default.md"
+    backup: yes
+    mode: '0644'
+
+- name: "Ensure Amazon Q CLI is installed"
+  homebrew:
+    name: awscli
+    state: present
+
+- name: "Check if Amazon Q CLI is installed"
+  shell: command -v q || echo "not installed"
+  register: q_installed
+  changed_when: false
+
+- name: "Install Amazon Q CLI if not installed"
+  shell: pip3 install amazon-q-cli
+  when: q_installed.stdout == "not installed"
+
+- name: "Create Amazon Q context directory"
+  file:
+    path: "{{ ansible_env.HOME }}/.aws/amazonq/context"
+    state: directory
+    mode: '0755'
+
+- name: "Register README.md to Amazon Q context"
+  shell: q context add --path {{ ansible_env.HOME }}/Products/dotfiles/README.md
+  args:
+    creates: "{{ ansible_env.HOME }}/.aws/amazonq/context/README.md"
+
+- name: "Register global rules to Amazon Q context"
+  shell: q context add --path {{ ansible_env.HOME }}/.aws/amazonq/rules/global/default.md
+  args:
+    creates: "{{ ansible_env.HOME }}/.aws/amazonq/context/default.md"
