@@ -9,7 +9,6 @@
   copy:
     src: ".aws/amazonq/rules/global/default.md"
     dest: "{{ ansible_env.HOME }}/.aws/amazonq/rules/global/default.md"
-    backup: yes
     mode: '0644'
 
 - name: "Ensure Amazon Q CLI is installed"
@@ -22,8 +21,10 @@
   register: q_installed
   changed_when: false
 
-- name: "Install Amazon Q CLI if not installed"
-  shell: pip3 install amazon-q-cli
+- name: "Install Amazon Q CLI"
+  homebrew:
+    name: amazon-q
+    state: present
   when: q_installed.stdout == "not installed"
 
 - name: "Create Amazon Q context directory"
@@ -32,12 +33,103 @@
     state: directory
     mode: '0755'
 
-- name: "Register README.md to Amazon Q context"
-  shell: q context add --path {{ ansible_env.HOME }}/Products/dotfiles/README.md
-  args:
-    creates: "{{ ansible_env.HOME }}/.aws/amazonq/context/README.md"
+- name: "Copy Amazon Q default context"
+  copy:
+    src: ".aws/amazonq/rules/global/default.md"
+    dest: "{{ ansible_env.HOME }}/.aws/amazonq/context/default.md"
+    backup: yes
+    mode: '0644'
 
 - name: "Register global rules to Amazon Q context"
-  shell: q context add --path {{ ansible_env.HOME }}/.aws/amazonq/rules/global/default.md
-  args:
-    creates: "{{ ansible_env.HOME }}/.aws/amazonq/context/default.md"
+  shell: |
+    # q chatを起動して/contextコマンドを実行するスクリプトを作成
+    cat > /tmp/q_context_script.sh << 'EOF'
+    #!/bin/bash
+    # Amazon Q chatを起動し、/contextコマンドを実行するスクリプト
+    (
+      sleep 2
+      echo "/context add {{ ansible_env.HOME }}/.aws/amazonq/rules/global/default.md"
+      sleep 1
+      echo "/quit"
+    ) | q chat
+    EOF
+    chmod +x /tmp/q_context_script.sh
+    /tmp/q_context_script.sh
+
+- name: "Download VOICEVOX Engine for macOS (vvpp package)"
+  get_url:
+    url: "https://github.com/VOICEVOX/voicevox_engine/releases/download/0.23.1/voicevox_engine-macos-x64-0.23.1.vvpp"
+    dest: "/tmp/voicevox-engine.vvpp"
+    mode: '0644'
+
+- name: "Create VOICEVOX directory in /usr/local"
+  file:
+    path: "/usr/local/share/voicevox"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Extract VOICEVOX Engine (vvpp is actually a zip)"
+  unarchive:
+    src: "/tmp/voicevox-engine.vvpp"
+    dest: "/usr/local/share/voicevox"
+    remote_src: yes
+  become: yes
+
+- name: "Find VOICEVOX Engine executable"
+  find:
+    paths: "/usr/local/share/voicevox"
+    patterns: "run"
+    file_type: file
+    recurse: no
+  register: voicevox_executable
+  become: yes
+
+- name: "Make VOICEVOX Engine executable"
+  file:
+    path: "{{ voicevox_executable.files[0].path }}"
+    mode: '0755'
+  become: yes
+  when: voicevox_executable.files | length > 0
+
+- name: "Create VOICEVOX symlink in /usr/local/bin"
+  file:
+    src: "{{ voicevox_executable.files[0].path }}"
+    dest: "/usr/local/bin/voicevox"
+    state: link
+  become: yes
+  when: voicevox_executable.files | length > 0
+
+- name: "Copy VOICEVOX LaunchDaemon plist"
+  copy:
+    src: "Library/LaunchDaemons/com.voicevox.engine.plist"
+    dest: "/Library/LaunchDaemons/com.voicevox.engine.plist"
+    mode: '0644'
+  become: yes
+  when: voicevox_executable.files | length > 0
+
+- name: "Load VOICEVOX LaunchDaemon"
+  shell: "launchctl load /Library/LaunchDaemons/com.voicevox.engine.plist"
+  become: yes
+  when: voicevox_executable.files | length > 0
+  ignore_errors: yes
+
+- name: "Install Go VoiceVox MCP server"
+  shell: "go install github.com/metapox/mcp-voicevox-go@latest"
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+
+- name: "Install uv"
+  homebrew:
+    name: uv
+    state: present
+
+- name: "Install python through uv"
+  shell: "uv python install 3.10"
+
+- name: "Copy Amazon Q MCP configuration"
+  copy:
+    src: ".aws/amazonq/mcp.json"
+    dest: "{{ ansible_env.HOME }}/.aws/amazonq/mcp.json"
+    backup: yes
+    mode: '0644'
