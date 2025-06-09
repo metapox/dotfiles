@@ -29,4 +29,4 @@ if [ ! -d "$ansible_path/inventories/$inventory_file_path" ]; then
   exit 1
 fi
 
-ansible-playbook -c local -i $ansible_path/inventories/$inventory_file_path/hosts.yaml $ansible_path/setup_mac.yaml 
+ansible-playbook -c local -i $ansible_path/inventories/$inventory_file_path/hosts.yaml $ansible_path/setup_mac.yaml --ask-become-pass
